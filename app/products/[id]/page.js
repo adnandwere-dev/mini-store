@@ -1,32 +1,118 @@
+"use client";
+
 import Link from "next/link";
+import Image from "next/image";
+import { useEffect, useState } from "react";
 import { ArrowLeft, Star } from "lucide-react";
+
 import ProductCard from "../../components/ProductCard";
 import AddToCartButton from "../../components/AddToCartButton";
-import Image from "next/image";
 
-async function getProduct(id) {
-  const res = await fetch(`https://fakestoreapi.com/products/${id}`);
+export default function ProductDetails({ params }) {
+  const [product, setProduct] = useState(null);
+  const [relatedProducts, setRelatedProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
 
-  if (!res.ok) throw new Error("Unable to load product");
+  useEffect(() => {
+    let cancelled = false;
 
-  return res.json();
-}
+    async function fetchProduct() {
+      try {
+        const { id } = await params;
 
-async function getRelatedProducts(category) {
-  const res = await fetch(
-    `https://fakestoreapi.com/products/category/${category}?limit=4`,
-  );
-  return res.ok ? res.json() : [];
-}
+        const productResponse = await fetch(
+          `https://fakestoreapi.com/products/${id}`,
+        );
 
-export default async function ProductDetails({ params }) {
-  const { id } = await params;
-  const product = await getProduct(id);
-  const relatedProducts = await getRelatedProducts(product.category);
+        if (!productResponse.ok) {
+          throw new Error("Unable to load product");
+        }
+
+        const productData = await productResponse.json();
+
+        if (cancelled) return;
+
+        setProduct(productData);
+
+        try {
+          const relatedResponse = await fetch(
+            `https://fakestoreapi.com/products/category/${encodeURIComponent(
+              productData.category,
+            )}`,
+          );
+
+          if (relatedResponse.ok) {
+            const relatedData = await relatedResponse.json();
+
+            if (!cancelled) {
+              setRelatedProducts(relatedData);
+            }
+          }
+        } catch {
+          if (!cancelled) {
+            setRelatedProducts([]);
+          }
+        }
+
+        setError(false);
+      } catch {
+        if (cancelled) return;
+
+        setError(true);
+      } finally {
+        if (!cancelled) {
+          setLoading(false);
+        }
+      }
+    }
+
+    fetchProduct();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [params]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-950 transition-colors duration-300">
+        <div className="mx-auto max-w-7xl px-6 py-16 text-center">
+          <p className="text-lg text-gray-600 dark:text-gray-400">
+            Loading product...
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error || !product) {
+    return (
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-950 transition-colors duration-300">
+        <div className="mx-auto max-w-7xl px-6 py-16 text-center">
+          <h1 className="mb-4 text-2xl font-bold text-gray-800 dark:text-white">
+            Unable to load product
+          </h1>
+
+          <p className="mb-6 text-gray-600 dark:text-gray-400">
+            We could not load this product right now.
+          </p>
+
+          <Link
+            href="/products"
+            className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-5 py-2.5 font-medium text-white transition-colors hover:bg-blue-700"
+          >
+            <ArrowLeft size={18} aria-hidden="true" />
+            Back to Products
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 transition-colors duration-300">
-      <div className="max-w-7xl mx-auto px-6 py-12">
+      <div className="mx-auto max-w-7xl px-6 py-12">
         {/* Back Button */}
         <Link
           href="/products"
@@ -37,11 +123,11 @@ export default async function ProductDetails({ params }) {
         </Link>
 
         {/* Product Details */}
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl dark:shadow-gray-900/50 overflow-hidden transition-colors duration-300">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 p-8">
+        <div className="overflow-hidden rounded-2xl bg-white shadow-xl transition-colors duration-300 dark:bg-gray-800 dark:shadow-gray-900/50">
+          <div className="grid grid-cols-1 gap-8 p-8 lg:grid-cols-2">
             {/* Product Image */}
             <div className="flex justify-center">
-              <div className="relative w-full max-w-md h-96 rounded-xl overflow-hidden shadow-lg dark:shadow-gray-900/50 bg-gray-100 dark:bg-gray-700">
+              <div className="relative h-96 w-full max-w-md overflow-hidden rounded-xl bg-gray-100 shadow-lg dark:bg-gray-700 dark:shadow-gray-900/50">
                 <Image
                   src={product.image}
                   alt={product.title}
@@ -55,13 +141,15 @@ export default async function ProductDetails({ params }) {
             {/* Product Info */}
             <div className="space-y-6">
               <div>
-                <h1 className="text-3xl lg:text-4xl font-bold text-gray-800 dark:text-white mb-4">
+                <h1 className="mb-4 text-3xl font-bold text-gray-800 dark:text-white lg:text-4xl">
                   {product.title}
                 </h1>
-                <div className="flex items-center space-x-4 mb-4">
-                  <span className="bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-400 px-3 py-1 rounded-full text-sm font-medium">
+
+                <div className="mb-4 flex items-center gap-4">
+                  <span className="rounded-full bg-blue-100 px-3 py-1 text-sm font-medium text-blue-800 dark:bg-blue-900/30 dark:text-blue-400">
                     {product.category}
                   </span>
+
                   <div className="flex items-center">
                     <Star
                       size={18}
@@ -69,7 +157,8 @@ export default async function ProductDetails({ params }) {
                       className="text-yellow-400"
                       aria-hidden="true"
                     />
-                    <span className="text-gray-600 dark:text-gray-400 ml-1">
+
+                    <span className="ml-1 text-gray-600 dark:text-gray-400">
                       {product.rating?.rate || "4.5"} (
                       {product.rating?.count || "100"} reviews)
                     </span>
@@ -77,7 +166,7 @@ export default async function ProductDetails({ params }) {
                 </div>
               </div>
 
-              <p className="text-gray-600 dark:text-gray-400 text-lg leading-relaxed">
+              <p className="text-lg leading-relaxed text-gray-600 dark:text-gray-400">
                 {product.description}
               </p>
 
@@ -85,7 +174,7 @@ export default async function ProductDetails({ params }) {
                 ${product.price}
               </div>
 
-              <div className="flex flex-col sm:flex-row gap-4">
+              <div className="flex flex-col gap-4 sm:flex-row">
                 <AddToCartButton product={product} />
               </div>
             </div>
@@ -93,12 +182,13 @@ export default async function ProductDetails({ params }) {
         </div>
 
         {/* Related Products */}
-        {relatedProducts.length > 1 && (
+        {relatedProducts.filter((p) => p.id !== product.id).length > 0 && (
           <div className="mt-16">
-            <h2 className="text-3xl font-bold text-center mb-12 text-gray-600 dark:text-white">
+            <h2 className="mb-12 text-center text-3xl font-bold text-gray-600 dark:text-white">
               Related Products
             </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+
+            <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
               {relatedProducts
                 .filter((p) => p.id !== product.id)
                 .slice(0, 3)
