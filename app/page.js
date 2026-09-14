@@ -2,9 +2,10 @@ import Link from "next/link";
 import { ArrowRight, Heart, ShoppingBag, ShoppingCart } from "lucide-react";
 import ProductCard from "./components/ProductCard";
 
+export const dynamic = "force-dynamic";
+
 async function getFeaturedProducts() {
   const res = await fetch("https://fakestoreapi.com/products?limit=6", {
-    next: { revalidate: 60 },
   });
 
   if (!res.ok) throw new Error("Unable to load featured products");
