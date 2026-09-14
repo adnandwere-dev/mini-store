@@ -6,11 +6,11 @@ Mini Store is a portfolio project focused on building a clean shopping experienc
 
 ## Live Demo
 
-[View Live Demo](YOUR_LIVE_DEMO_URL)
+[View Live Demo](https://mini-store-azure.vercel.app/)
 
 ## GitHub
 
-[View Source Code](YOUR_GITHUB_REPOSITORY_URL)
+[View Source Code](https://github.com/adnandwere-dev/mini-store)
 
 ## Features
 
