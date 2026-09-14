@@ -125,7 +125,6 @@ html.dark .bg-gradient-to-r {
   background-image: linear-gradient(to right, var(--tw-gradient-stops));
 }
 
-/* Text color adjustments */
 html.dark .text-gray-50 {
   color: #f9fafb;
 }
@@ -159,9 +158,21 @@ html.dark .text-gray-700 {
 }
 
 html.dark .text-gray-800 {
-  color: #1f2937;
+  color: #f8fafc;
 }
 
 html.dark .text-gray-900 {
-  color: #111827;
+  color: #f8fafc;
+}
+
+html.dark .text-slate-500 {
+  color: #94a3b8;
+}
+
+html.dark .text-slate-600 {
+  color: #cbd5e1;
+}
+
+html.dark .text-slate-900 {
+  color: #f8fafc;
 }

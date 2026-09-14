@@ -96,7 +96,7 @@ export default function CartPage() {
 
                   {/* Product Info */}
                   <div className="flex-1">
-                    <h3 className="font-bold text-lg text-gray-800 dark:text-white mb-2 line-clamp-2">
+                    <h3 className="font-bold text-lg text-gray-700 dark:text-white mb-2 line-clamp-2">
                       {item.title}
                     </h3>
 
@@ -114,7 +114,7 @@ export default function CartPage() {
                         <Minus size={16} aria-hidden="true" />
                       </button>
 
-                      <span className="min-w-8 text-center font-bold text-gray-800 dark:text-white">
+                      <span className="min-w-8 text-center font-bold text-gray-700 dark:text-white">
                         {item.quantity}
                       </span>
 
@@ -147,7 +147,7 @@ export default function CartPage() {
                       Item Total
                     </p>
 
-                    <p className="text-xl font-bold text-gray-800 dark:text-white">
+                    <p className="text-xl font-bold text-gray-700 dark:text-white">
                       ${(item.price * item.quantity).toFixed(2)}
                     </p>
                   </div>
@@ -158,7 +158,7 @@ export default function CartPage() {
 
           {/* Order Summary */}
           <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg dark:shadow-gray-900/50 h-fit transition-colors duration-300">
-            <h2 className="text-2xl font-bold mb-6 text-gray-800 dark:text-white">
+            <h2 className="text-2xl font-bold mb-6 text-gray-700 dark:text-white">
               Order Summary
             </h2>
 
@@ -168,7 +168,7 @@ export default function CartPage() {
                   Subtotal ({totalItems} items)
                 </span>
 
-                <span className="font-semibold text-gray-800 dark:text-white">
+                <span className="font-semibold text-gray-700 dark:text-white">
                   ${subtotal.toFixed(2)}
                 </span>
               </div>
@@ -186,7 +186,7 @@ export default function CartPage() {
               <div className="flex justify-between">
                 <span className="text-gray-600 dark:text-gray-400">Tax</span>
 
-                <span className="font-semibold text-gray-800 dark:text-white">
+                <span className="font-semibold text-gray-700 dark:text-white">
                   ${tax.toFixed(2)}
                 </span>
               </div>
@@ -194,7 +194,7 @@ export default function CartPage() {
               <hr className="border-gray-200 dark:border-gray-700" />
 
               <div className="flex justify-between text-xl font-bold">
-                <span className="text-gray-800 dark:text-white">Total</span>
+                <span className="text-gray-700 dark:text-white">Total</span>
 
                 <span className="text-green-600 dark:text-green-500">
                   ${total.toFixed(2)}
@@ -219,7 +219,7 @@ export default function CartPage() {
             {/* Continue Shopping */}
             <Link
               href="/products"
-              className="block w-full mt-4 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-white py-3 px-6 rounded-lg font-semibold text-center hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors duration-200"
+              className="block w-full mt-4 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-white py-3 px-6 rounded-lg font-semibold text-center hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors duration-200"
             >
               Continue Shopping
             </Link>
